@@ -1,9 +1,8 @@
 `timescale 1ns / 1ps
 
-module top(input clk, sh_en, reset, output [19:0] Y, matches, output match);
+module top(input clk, sh_en, reset, output [19:0] Y, matches, output match, tick);
     wire op;
-    wire tick;
-
+    
     // Connect the 20-bit LFSR
     lfsr lsfr(.clk(clk), .sh_en(sh_en), .reset(reset), .Q_out(Y), .max_tick_reg(tick), .op(op));
 
