@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module lfsr(input clk, sh_en, reset, output [19:0] Q_out, output reg max_tick_reg, op);
+module lfsr(input clk, sh_en, reset, output [19:0] Q_out, output reg max_tick_reg, output op);
     // Seed
     localparam seed = 20'b00000000000000101001;
 
