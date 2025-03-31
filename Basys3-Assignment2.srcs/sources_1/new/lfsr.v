@@ -1,13 +1,13 @@
 `timescale 1ns / 1ps
 
-module lfsr(input clk, sh_en, reset, output [15:0] Q_out, output reg max_tick_reg);
+module lfsr(input clk, sh_en, reset, output [19:0] Q_out, output reg max_tick_reg);
     // Seed
-    localparam seed = 16'b0000000101000101;
+    localparam seed = 20'b00000000000000101001;
 
     // Current State
-    reg [15:0] Q_state;
+    reg [19:0] Q_state;
     // Next State
-    wire [15:0] Q_ns;
+    wire [19:0] Q_ns;
     // Feedback
     wire Q_fb;
 
@@ -30,8 +30,8 @@ module lfsr(input clk, sh_en, reset, output [15:0] Q_out, output reg max_tick_re
     end
 
     // Next State Logic
-    assign Q_fb = ~(Q_state[15] ^ Q_state[14] ^ Q_state[12] ^ Q_state[3]);
-    assign Q_ns = {Q_state[14:0], Q_fb};
+    assign Q_fb = Q_state[19] ^ Q_state[16];
+    assign Q_ns = {Q_state[18:0], Q_fb};
 
     // Output Logic
     assign Q_out = Q_state;
