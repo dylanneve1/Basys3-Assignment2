@@ -1,16 +1,20 @@
 `timescale 1ns / 1ps
 
 module fsm_sequence_detector(input clk, reset, i0, output reg match);
+    // Regs for state and next_state
     reg [2:0] state, next_state;
     
     always @ (posedge clk or posedge reset) begin
+        // If reset, reset state
         if (reset)
             state <= 3'b000;
+        // Otherwise shift state to next state
         else
             state <= next_state;
     end
     
     always @ * begin
+        // Logic for FSM, detecting occurances of 010100 in bitstream
         case (state)
             3'b000: next_state = (i0 == 1'b0) ? 3'b001 : 3'b000; // i0 = 0 -> seen 0      | i0 = 1 -> seen 1      -> discard
             3'b001: next_state = (i0 == 1'b1) ? 3'b010 : 3'b001; // i0 = 1 -> seen 01     | i0 = 0 -> seen 00     -> seen 0    -> to 001
@@ -24,6 +28,7 @@ module fsm_sequence_detector(input clk, reset, i0, output reg match);
     end
     
     always @ * begin
+        // If state is seen 010100 then assert match
         match = (state == 3'b110) ? 1'b1 : 1'b0;
     end
 endmodule
