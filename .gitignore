@@ -5,3 +5,4 @@
 *.ip_user_files/*
 *.runs/*
 *.srcs/utils*
+.DS_Store

@@ -10,7 +10,7 @@ module top(
     output wire tick,        // Seed has been reached
     output wire [9:0] out,   // LED output
     output wire [3:0] anode, // ANODE for SSEG display
-    output wire [7:0] sseg   // Main for SSEG display
+    output wire [6:0] sseg   // Main for SSEG display
 );
     // Wire for MSB of LFSR, scaled clk and final clk
     wire op, scaled_clk, clk;
@@ -43,5 +43,5 @@ module top(
     binary_to_hex helper(.binary(matches), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0));
     
     // sseg display
-    sseg display(.clk(clk), .reset(reset), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0), .anode(anode), .sseg(sseg));
+    sseg display(.clk(CCLK), .reset(reset), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0), .anode(anode), .sseg(sseg));
 endmodule

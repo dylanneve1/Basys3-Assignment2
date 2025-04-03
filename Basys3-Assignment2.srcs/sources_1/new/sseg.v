@@ -5,7 +5,7 @@ module sseg(
     input  wire clk, reset,
     input  wire [3:0] hex3, hex2, hex1, hex0,
     output reg  [3:0] anode,
-    output reg  [7:0] sseg
+    output reg  [6:0] sseg
 );
     localparam N = 18;
     
