@@ -19,6 +19,8 @@ module top(
     // Wire to connect number of matches to SSEG
     wire [15:0] matches; // 16-bit MAX!!!!
     
+    wire [3:0] hex0, hex1, hex2, hex3;
+    
     // Connect the clock scaler
     clock clkscaler(.CCLK(CCLK), .clkscale(50000000), .clk(scaled_clk));
     
@@ -37,6 +39,9 @@ module top(
     // Multiplex
     multiplexer plex(.Q_state(Q_state), .sel(sel), .out(out));
     
+    // Convert the binary matches to 4 hex words
+    binary_to_hex helper(.binary(matches), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0));
+    
     // sseg display
-    sseg display(.clk(clk), .reset(reset), .anode(anode), .sseg(sseg));
+    sseg display(.clk(clk), .reset(reset), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0), .anode(anode), .sseg(sseg));
 endmodule
