@@ -1,12 +1,28 @@
 `timescale 1ns / 1ps
 
-module top(input CCLK, sh_en, reset, sel, sel2, output match, tick, output [9:0] out);
-    // Wire for MSB of LFSR
+module top(
+    input wire CCLK,         // Clock from Basys3
+    input wire sh_en,        // Shift enable input
+    input wire reset,        // Reset input
+    input wire sel,          // Sel for LED multiplex
+    input wire sel2,         // Sel for clk multiplex
+    output wire match,       // Indicate if a match is detected
+    output wire tick,        // Seed has been reached
+    output wire [9:0] out,   // LED output
+    output wire [3:0] anode, // ANODE for SSEG display
+    output wire [7:0] sseg   // Main for SSEG display
+);
+    // Wire for MSB of LFSR, scaled clk and final clk
     wire op, scaled_clk, clk;
+    // Wire for current output of LFSR
     wire [19:0] Q_state;
+    // Wire to connect number of matches to SSEG
+    wire [15:0] matches; // 16-bit MAX!!!!
     
-    clock clk(.CCLK(CCLK), .clkscale(50000000), .clk(scaled_clk));
+    // Connect the clock scaler
+    clock clkscaler(.CCLK(CCLK), .clkscale(50000000), .clk(scaled_clk));
     
+    // Connect the clock multiplexer
     multiplexer_2bit plex2bit(.CCLK(CCLK), .scaled_clk(scaled_clk), .sel(sel2), .clk(clk));
     
     // Connect the 20-bit LFSR
@@ -16,8 +32,11 @@ module top(input CCLK, sh_en, reset, sel, sel2, output match, tick, output [9:0]
     fsm_sequence_detector fsm(.clk(clk), .reset(reset), .i0(op), .match(match));
     
     // Connect the counter module to count matches
-    counter cnt(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(match), .tick(tick), .matches());
+    counter cnt(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(match), .tick(tick), .matches(matches));
     
     // Multiplex
     multiplexer plex(.Q_state(Q_state), .sel(sel), .out(out));
+    
+    // sseg display
+    sseg display(.clk(clk), .reset(reset), .anode(anode), .sseg(sseg));
 endmodule
