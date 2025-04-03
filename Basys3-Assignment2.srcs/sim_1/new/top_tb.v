@@ -4,7 +4,7 @@ module top_tb;
     reg clk, sh_en, reset;
     wire match, tick;
 
-    top uut(.clk(clk), .sh_en(sh_en), .reset(reset), .matches(), .match(match), .tick(tick));
+    top uut(.CCLK(clk), .sh_en(sh_en), .reset(reset), .sel(), .sel2(), .match(match), .tick(tick), .out(), .anode(), .sseg());
     
     initial begin
         clk = 1;
