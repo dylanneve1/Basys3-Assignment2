@@ -3,3 +3,5 @@
 *.cache/*
 *.sim/*
 *.ip_user_files/*
+*.runs/*
+*.srcs/utils*

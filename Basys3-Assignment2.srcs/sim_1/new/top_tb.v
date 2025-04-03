@@ -2,10 +2,9 @@
 
 module top_tb;
     reg clk, sh_en, reset;
-    wire [19:0] Y, matches;
     wire match, tick;
 
-    top uut(.clk(clk), .sh_en(sh_en), .reset(reset), .Y(Y), .matches(matches), .match(match), .tick(tick));
+    top uut(.clk(clk), .sh_en(sh_en), .reset(reset), .matches(), .match(match), .tick(tick));
     
     initial begin
         clk = 1;
