@@ -10,7 +10,8 @@ module top(
     output wire tick,        // Seed has been reached
     output wire [9:0] out,   // LED output
     output wire [3:0] an,    // ANODE for SSEG display
-    output wire [7:0] sseg   // Main for SSEG display
+    output wire [7:0] sseg,  // Main for SSEG display
+    output wire [2:0] state  // Current state of FSM
 );
     // Wire for MSB of LFSR, scaled clk and final clk
     wire op, scaled_clk, clk;
@@ -31,7 +32,7 @@ module top(
     lfsr gen(.clk(clk), .sh_en(sh_en), .reset(reset), .Q_out(Q_state), .max_tick_reg(tick), .op(op));
 
     // Connect the FSM Sequence Detector
-    fsm_sequence_detector fsm(.clk(clk), .reset(reset), .i0(op), .match(match));
+    fsm_sequence_detector fsm(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(op), .match(match), .state(state));
     
     // Connect the counter module to count matches
     counter cnt(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(match), .tick(tick), .matches(matches));

@@ -35,10 +35,17 @@ set_property PACKAGE_PIN V13 [get_ports {out[8]}]
 set_property PACKAGE_PIN V3 [get_ports {out[9]}]
         set_property IOSTANDARD LVCMOS33 [get_ports {out[9]}]
 
-set_property PACKAGE_PIN R2 [get_ports {match}]
-        set_property IOSTANDARD LVCMOS33 [get_ports {match}]
 set_property PACKAGE_PIN L1 [get_ports {tick}]
         set_property IOSTANDARD LVCMOS33 [get_ports {tick}]
+set_property PACKAGE_PIN P1 [get_ports {match}]
+        set_property IOSTANDARD LVCMOS33 [get_ports {match}]
+
+set_property PACKAGE_PIN P3 [get_ports {state[2]}]
+        set_property IOSTANDARD LVCMOS33 [get_ports {state[2]}]
+set_property PACKAGE_PIN U3 [get_ports {state[1]}]
+        set_property IOSTANDARD LVCMOS33 [get_ports {state[1]}]
+set_property PACKAGE_PIN W3 [get_ports {state[0]}]
+        set_property IOSTANDARD LVCMOS33 [get_ports {state[0]}]
         
 	
 ##7 segment display - Cathode pins

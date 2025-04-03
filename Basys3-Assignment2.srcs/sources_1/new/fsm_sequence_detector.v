@@ -1,16 +1,17 @@
 `timescale 1ns / 1ps
 
-module fsm_sequence_detector(input clk, reset, i0, output reg match);
+module fsm_sequence_detector(input clk, sh_en, reset, i0, output reg match, output reg [2:0] state);
     // Regs for state and next_state
-    reg [2:0] state, next_state;
+    reg [2:0] next_state;
     
     always @ (posedge clk or posedge reset) begin
         // If reset, reset state
-        if (reset)
+        if (reset) begin
             state <= 3'b000;
         // Otherwise shift state to next state
-        else
+        end else if (sh_en) begin
             state <= next_state;
+        end
     end
     
     always @ * begin
@@ -28,7 +29,9 @@ module fsm_sequence_detector(input clk, reset, i0, output reg match);
     end
     
     always @ * begin
-        // If state is seen 010100 then assert match
-        match = (state == 3'b110) ? 1'b1 : 1'b0;
+        if (sh_en) begin
+            // If state is seen 010100 then assert match
+            match = (state == 3'b110) ? 1'b1 : 1'b0;
+        end
     end
 endmodule
