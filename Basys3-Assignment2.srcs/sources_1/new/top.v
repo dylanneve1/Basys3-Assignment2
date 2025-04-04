@@ -18,31 +18,28 @@ module top(
     // Wire for current output of LFSR
     wire [19:0] Q_state;
     // Wire to connect number of matches to SSEG
-    wire [15:0] matches; // 16-bit MAX!!!!
-    
-    wire [3:0] hex0, hex1, hex2, hex3;
+    wire [3:0] hex3, hex2, hex1, hex0;
+    // Wire to store number of matches in binary for comparison
+    wire [15:0] binary_counter;
     
     // Connect the clock scaler
-    clock clkscaler(.CCLK(CCLK), .clkscale(50000000), .clk(scaled_clk));
+    clock clkscaler_unit(.CCLK(CCLK), .clkscale(50000000), .clk(scaled_clk));
     
     // Connect the clock multiplexer
-    multiplexer_2bit plex2bit(.CCLK(CCLK), .scaled_clk(scaled_clk), .sel(sel2), .clk(clk));
+    multiplexer_2bit plex2bit_unit(.CCLK(CCLK), .scaled_clk(scaled_clk), .sel(sel2), .clk(clk));
     
     // Connect the 20-bit LFSR
-    lfsr gen(.clk(clk), .sh_en(sh_en), .reset(reset), .Q_out(Q_state), .max_tick_reg(tick), .op(op));
+    lfsr lfsr_unit(.clk(clk), .sh_en(sh_en), .reset(reset), .Q_out(Q_state), .max_tick_reg(tick), .op(op));
 
     // Connect the FSM Sequence Detector
-    fsm_sequence_detector fsm(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(op), .match(match), .state(state));
+    fsm_sequence_detector fsm_unit(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(op), .match(match), .state(state));
     
     // Connect the counter module to count matches
-    counter cnt(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(match), .tick(tick), .matches(matches));
+    counter cnt_unit(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(match), .tick(tick), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0), .bin(binary_counter));
     
     // Multiplex
-    multiplexer plex(.Q_state(Q_state), .sel(sel), .out(out));
-    
-    // Convert the binary matches to 4 hex words
-    binary_to_hex helper(.binary(matches), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0));
+    multiplexer plex_unit(.Q_state(Q_state), .sel(sel), .out(out));
     
     // sseg display
-    sseg display(.clk(CCLK), .reset(reset), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0), .dp_in(4'b1111), .an(an), .sseg(sseg));
+    sseg display_unit(.clk(CCLK), .reset(reset), .hex3(hex3), .hex2(hex2), .hex1(hex1), .hex0(hex0), .dp_in(4'b1111), .an(an), .sseg(sseg));
 endmodule

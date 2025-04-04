@@ -29,9 +29,11 @@ module fsm_sequence_detector(input clk, sh_en, reset, i0, output reg match, outp
     end
     
     always @ * begin
-        if (sh_en) begin
+        if (sh_en && state == 3'b110) begin
             // If state is seen 010100 then assert match
-            match = (state == 3'b110) ? 1'b1 : 1'b0;
+            match = 1'b1;
+        end else begin
+            match = 1'b0;
         end
     end
 endmodule
