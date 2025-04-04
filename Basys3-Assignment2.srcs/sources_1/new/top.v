@@ -14,7 +14,7 @@ module top(
     output wire [2:0] state  // Current state of FSM
 );
     // Wire for MSB of LFSR, scaled clk and final clk
-    wire op, scaled_clk, clk;
+    wire op, sclk, clk;
     // Wire for current output of LFSR
     wire [19:0] Q_state;
     // Wire to connect number of matches to SSEG
@@ -23,13 +23,13 @@ module top(
     wire [15:0] binary_counter;
     
     // Connect the clock scaler
-    clock clkscaler_unit(.CCLK(CCLK), .clkscale(50000000), .clk(scaled_clk));
+    clock clkscaler_unit(.CCLK(CCLK), .scale(50000000), .clk(sclk));
     
     // Connect the clock multiplexer
-    multiplexer_2bit plex2bit_unit(.CCLK(CCLK), .scaled_clk(scaled_clk), .sel(sel2), .clk(clk));
+    multiplexer_2bit plex2bit_unit(.CCLK(CCLK), .sclk(sclk), .sel(sel2), .reset(reset), .clk(clk));
     
     // Connect the 20-bit LFSR
-    lfsr lfsr_unit(.clk(clk), .sh_en(sh_en), .reset(reset), .Q_out(Q_state), .max_tick_reg(tick), .op(op));
+    lfsr lfsr_unit(.clk(clk), .sh_en(sh_en), .reset(reset), .Q_out(Q_state), .tick(tick), .op(op));
 
     // Connect the FSM Sequence Detector
     fsm_sequence_detector fsm_unit(.clk(clk), .sh_en(sh_en), .reset(reset), .i0(op), .match(match), .state(state));

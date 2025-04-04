@@ -4,9 +4,9 @@
 // Used because for hardware testing the clk speed is too high to
 // observe the output, so we use switch W17 to control the clock
 // scale so we can use a 1Hz refresh rate.
-module multiplexer_2bit(input CCLK, scaled_clk, sel, output reg clk);
+module multiplexer_2bit(input CCLK, scaled_clk, sel, reset, output reg clk);
     // Calculate which value should be passed to out based on sel
-    always @(*) begin
+    always @(posedge reset) begin
         case(sel)
             // Use hardware clock
             1'b0: clk = CCLK;

@@ -2,12 +2,12 @@
 
 // Clock scaling module
 // Scales the hardware clock down to 1Hz.
-module clock(input CCLK, input [25:0] clkscale, output reg clk);
+module clock(input CCLK, input [25:0] scale, output reg clk);
     // Counter
     reg [25:0] counter = 0;
     always @(posedge CCLK) begin
         // If counter reached 50M
-        if (counter >= clkscale) begin
+        if (counter >= scale) begin
             // Reset counter
             counter <= 0;
             // Flip clock

@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 // 20-bit XOR LFSR Module
-module lfsr(input clk, sh_en, reset, output [19:0] Q_out, output reg max_tick_reg, output op);
+module lfsr(input clk, sh_en, reset, output [19:0] Q_out, output reg tick, output op);
     // Seed
     localparam seed = 20'b00000000000000101001;
 
@@ -16,17 +16,17 @@ module lfsr(input clk, sh_en, reset, output [19:0] Q_out, output reg max_tick_re
         if (reset) begin
             // Reset All
             Q_state <= seed;
-            max_tick_reg <= 1'b0;
+            tick <= 1'b0;
         end else if (sh_en) begin
             // State to next
             Q_state <= Q_ns;
             // If next state is seed
             if (Q_ns == seed) begin
                 // Max tick and increment
-                max_tick_reg <= 1'b1;
+                tick <= 1'b1;
             end else
                 // Max tick low
-                max_tick_reg <= 1'b0;
+                tick <= 1'b0;
         end
     end
 
