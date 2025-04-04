@@ -37,10 +37,6 @@ module counter(
             // Increment the least-significant digit
             hex0_next = hex0 + 4'h1;
             bin_next = bin + 1'b1;
-            // Make sure binary representation stays at decimal 9999 or below
-            if (bin_next == 16'b0010011100010000) begin
-                bin_next = 16'b0010011100001111;
-            end
             // Handle 1nd digit overflow
             if (hex0 == 4'h9) begin
                 hex0_next = 4'h0;

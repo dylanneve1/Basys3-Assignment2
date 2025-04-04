@@ -26,7 +26,7 @@ module top(
     clock clkscaler_unit(.CCLK(CCLK), .scale(50000000), .clk(sclk));
     
     // Connect the clock multiplexer
-    multiplexer_2bit plex2bit_unit(.CCLK(CCLK), .sclk(sclk), .sel(sel2), .reset(reset), .clk(clk));
+    multiplexer_2bit plex2bit_unit(.CCLK(CCLK), .sclk(sclk), .sel(sel2), .clk(clk));
     
     // Connect the 20-bit LFSR
     lfsr lfsr_unit(.clk(clk), .sh_en(sh_en), .reset(reset), .Q_out(Q_state), .tick(tick), .op(op));
