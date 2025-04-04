@@ -1,16 +1,16 @@
 `timescale 1ns / 1ps
 
 module counter(
-    input clk,
-    input sh_en,
-    input reset,
-    input i0,
-    input tick,
-    output reg [3:0] hex3,
-    output reg [3:0] hex2,
-    output reg [3:0] hex1,
-    output reg [3:0] hex0,
-    output reg [15:0] bin
+    input clk,             // Clock signal
+    input sh_en,           // Shift enable signal
+    input reset,           // Reset signal
+    input i0,              // Input signal, to count
+    input tick,            // When seed has been reached
+    output reg [3:0] hex3, // For SSEG, 4th HEX digit
+    output reg [3:0] hex2, // For SSEG, 3rd HEX digit
+    output reg [3:0] hex1, // For SSEG, 2nd HEX digit
+    output reg [3:0] hex0, // For SSEG, 1st HEX digit
+    output reg [15:0] bin  // Binary counter output, for validation
 );
 
     // Next-state variables
@@ -37,16 +37,24 @@ module counter(
             // Increment the least-significant digit
             hex0_next = hex0 + 4'h1;
             bin_next = bin + 1'b1;
+            // Make sure binary representation stays at decimal 9999 or below
+            if (bin_next == 16'b0010011100010000) begin
+                bin_next = 16'b0010011100001111;
+            end
+            // Handle 1nd digit overflow
             if (hex0 == 4'h9) begin
                 hex0_next = 4'h0;
                 hex1_next = hex1 + 4'h1;
+                // Handle 2nd digit overflow
                 if (hex1 == 4'h9) begin
                     hex1_next = 4'h0;
                     hex2_next = hex2 + 4'h1;
+                    // Handle 3rd digit overflow
                     if (hex2 == 4'h9) begin
                         hex2_next = 4'h0;
                         hex3_next = hex3 + 4'h1;
                         // Saturate if hex3 reaches 10
+                        // SSEG can only display up to 9999
                         if (hex3 == 4'h9)
                             hex3_next = 4'h9;
                     end
