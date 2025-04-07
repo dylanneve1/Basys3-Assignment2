@@ -25,7 +25,7 @@ module counter(
         hex1_next = hex1;
         hex0_next = hex0;
         bin_next = bin;
-        
+
         // On reset or tick, clear the counter
         if (reset || tick) begin
             hex3_next = 4'h0;
@@ -34,32 +34,40 @@ module counter(
             hex0_next = 4'h0;
             bin_next = 16'b0000000000000000;
         end else if (sh_en && i0) begin
-            // Increment the least-significant digit
-            hex0_next = hex0 + 4'h1;
-            bin_next = bin + 1'b1;
-            // Handle 1nd digit overflow
-            if (hex0 == 4'h9) begin
-                hex0_next = 4'h0;
-                hex1_next = hex1 + 4'h1;
-                // Handle 2nd digit overflow
-                if (hex1 == 4'h9) begin
-                    hex1_next = 4'h0;
-                    hex2_next = hex2 + 4'h1;
-                    // Handle 3rd digit overflow
-                    if (hex2 == 4'h9) begin
-                        hex2_next = 4'h0;
-                        hex3_next = hex3 + 4'h1;
-                        // Saturate if hex3 reaches 10
-                        // SSEG can only display up to 9999
-                        if (hex3 == 4'h9)
-                            hex3_next = 4'h9;
+            // Don't increment hex if 9999
+            if (hex3 == 4'h9 && hex2 == 4'h9 && hex1 == 4'h9 && hex0 == 4'h9) begin
+                hex3_next = 4'd9;
+                hex2_next = 4'd9;
+                hex1_next = 4'd9;
+                hex0_next = 4'd9;
+                bin_next = bin + 1'b1; // Still increment binary counter
+            end else begin
+                bin_next = bin + 1'b1; // Increment binary
+                if (hex0 == 4'h9) begin // Overflow hex0
+                    hex0_next = 4'h0;
+                    if (hex1 == 4'h9) begin // Overflow hex1
+                        hex1_next = 4'h0;
+                        if (hex2 == 4'h9) begin // Overflow hex2
+                            hex2_next = 4'h0;
+                            if (hex3 == 4'h9) begin // Overflow hex3
+                                hex3_next = 4'h9;
+                            end else begin
+                                hex3_next = hex3 + 1;
+                            end
+                        end else begin
+                            hex2_next = hex2 + 1;
+                        end
+                    end else begin
+                        hex1_next = hex1 + 1;
                     end
+                end else begin
+                    hex0_next = hex0 + 1;
                 end
             end
         end
     end
 
-    // Sequential state update using nonblocking assignments
+    // Update the values on positive-edge of clock
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             hex3 <= 4'h0;
